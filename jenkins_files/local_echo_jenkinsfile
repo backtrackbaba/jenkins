@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Stage 1: Initialize') {
+            steps {
+                echo 'Stage 1: Initializing the pipeline...'
+            }
+        }
+        stage('Stage 2: Process') {
+            steps {
+                echo 'Stage 2: Processing...'
+            }
+        }
+        stage('Stage 3: Cleanup') {
+            steps {
+                echo 'Stage 3: Cleaning up...'
+            }
+        }
+    }
+}
+

@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    environment {
+        REMOTE_SERVER = credentials('REMOTE_SERVER_IP')
+        REMOTE_USER = credentials('REMOTE_SERVER_USER')
+    }
+
+    stages {
+        stage('Stage 1: Check Connectivity') {
+            steps {
+                sshagent(['REMOTE_SERVER_SSH_AGENT']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} echo "Connected to remote server"
+                    """
+                }
+            }
+        }
+
+        stage('Stage 2: Run Operations') {
+            steps {
+                sshagent(['your-ssh-credential-id']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'uptime && whoami && df -h'
+                    """
+                }
+            }
+        }
+
+        stage('Stage 3: Cleanup') {
+            steps {
+                sshagent(['your-ssh-credential-id']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'rm -f /tmp/some-temp-file'
+                    """
+                }
+            }
+        }
+    }
+}
